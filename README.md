@@ -1,6 +1,6 @@
 # Dotfiles
 
-My OS X / Ubuntu dotfiles.
+My OS X / Ubuntu / solaris dotfiles - this is a fork of "Cowboy" Ben Alman's awesome set of scripts
 
 ## Why is this a git repo?
 
@@ -11,7 +11,7 @@ I finally decided that I wanted to be able to execute a single command to "boots
 That command is [dotfiles][dotfiles], and this is my "dotfiles" Git repo.
 
 [dotfiles]: bin/dotfiles
-[bin]: https://github.com/cowboy/dotfiles/tree/master/bin
+[bin]: https://github.com/mhglover/dotfiles/tree/master/bin
 
 ## What, exactly, does the "dotfiles" command do?
 
@@ -40,7 +40,7 @@ Note:
 ### Ubuntu Notes
 
 * You need to be an administrator (for `sudo`).
-* You might want to set up your ubuntu server [like I do it](/cowboy/dotfiles/wiki/ubuntu-setup), but then again, you might not.
+* You might want to set up your ubuntu server [like cowboy do it](/cowboy/dotfiles/wiki/ubuntu-setup), but then again, you might not.
 * Either way, you should at least update/upgrade APT with `sudo apt-get -qq update && sudo apt-get -qq dist-upgrade` first.
 
 ### Actual Installation
