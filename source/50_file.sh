@@ -25,6 +25,9 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias -- -='cd -'
 
+function cd { builtin cd "$1" && ls; }
+function ccd { builtin cd "$1"; }
+
 # File size
 alias fs="stat -f '%z bytes'"
 alias df="df -h"
