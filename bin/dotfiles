@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo 'Dotfiles - "Cowboy" Ben Alman - http://benalman.com/'
+echo 'Dotfiles - Originally by "Cowboy" Ben Alman - http://benalman.com/'
 
 if [[ "$1" == "-h" || "$1" == "--help" ]]; then cat <<HELP
 
@@ -125,11 +125,11 @@ function do_stuff() {
 
 # Enough with the functions, let's do stuff.
 
-# Ensure that we can actually, like, compile anything.
-if [[ ! "$(type -P gcc)" && "$OSTYPE" =~ ^darwin ]]; then
-  e_error "XCode or the Command Line Tools for XCode must be installed first."
-  exit 1
-fi
+# # Ensure that we can actually, like, compile anything.
+# if [[ ! "$(type -P gcc)" && "$OSTYPE" =~ ^darwin ]]; then
+#   e_error "XCode or the Command Line Tools for XCode must be installed first."
+#   exit 1
+# fi
 
 # If Git is not installed, install it (Ubuntu only, since Git comes standard
 # with recent XCode or CLT)
@@ -152,7 +152,7 @@ if [[ ! -d ~/.dotfiles ]]; then
   new_dotfiles_install=1
   # ~/.dotfiles doesn't exist? Clone it!
   e_header "Downloading dotfiles"
-  git clone --recursive git://github.com/cowboy/dotfiles.git ~/.dotfiles
+  git clone --recursive git://github.com/mhglover/dotfiles.git ~/.dotfiles
   cd ~/.dotfiles
 else
   # Make sure we have the latest files.
