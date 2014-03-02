@@ -9,7 +9,7 @@ export PATH
 alias c="tr -d '\n' | pbcopy"
 
 # Make 'less' more.  -- needs homebrew
-# eval "$(lesspipe.sh)"  
+ eval "$(lesspipe.sh)"  
 
 # Start ScreenSaver. This will lock the screen if locking is enabled.
 alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resources/ScreenSaverEngine.app"
