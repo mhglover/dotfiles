@@ -9,7 +9,7 @@
   whitespace = fix
 [alias]
   br = branch
-  ci = commit -v
+	ci = commit -v
   co = checkout
   df = diff
   g = grep -I
@@ -57,3 +57,5 @@
   insteadOf = "gist:"
 [url "git@heroku.com:"]
   insteadOf = "heroku:"
+[push]
+	default = simple
