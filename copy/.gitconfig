@@ -1,5 +1,5 @@
 [user]
-  name = Ben Alman
+  name = Matthew Harris Glover
   email = EMAIL
 [core]
   autocrlf = input
@@ -9,7 +9,7 @@
   whitespace = fix
 [alias]
   br = branch
-  ci = commit
+  ci = commit -v
   co = checkout
   df = diff
   g = grep -I
