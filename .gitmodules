@@ -14,5 +14,5 @@
 	path = libs/z
 	url = git://github.com/rupa/z.git
 [submodule "libs/nave"]
-	path = libs/nave
+	path = unused/nave
 	url = git://github.com/isaacs/nave.git
