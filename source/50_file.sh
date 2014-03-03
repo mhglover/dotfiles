@@ -25,7 +25,14 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias -- -='cd -'
 
-function cd { builtin cd "$1" && ls; }
+function cd { 
+    if [[ $1 == "" ]]; then
+        builtin cd
+        ls
+    else
+        builtin cd "$1" && ls
+    fi
+}
 function ccd { builtin cd "$1"; }
 
 # File size
