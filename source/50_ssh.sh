@@ -6,3 +6,6 @@ function ssh-init() {
     #connect
     ssh $1
 }
+
+#enable ssh autocompletion
+complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
