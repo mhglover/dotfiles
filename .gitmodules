@@ -1,15 +1,6 @@
 [submodule "libs/ack"]
 	path = libs/ack
 	url = git://github.com/petdance/ack.git
-[submodule "libs/rbenv"]
-	path = unused/libs/rbenv
-	url = git://github.com/sstephenson/rbenv.git
-[submodule "libs/ruby-build"]
-	path = unused/libs/ruby-build
-	url = git://github.com/sstephenson/ruby-build.git
 [submodule "libs/git-extras"]
 	path = libs/git-extras
 	url = git://github.com/visionmedia/git-extras.git
-[submodule "libs/nave"]
-	path = unused/nave
-	url = git://github.com/isaacs/nave.git
