@@ -146,7 +146,7 @@ fi
 # fi
 
 # Update existing sudo time stamp if set, otherwise do nothing.
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Initialize.
 if [[ ! -d ~/.dotfiles ]]; then
@@ -158,17 +158,17 @@ if [[ ! -d ~/.dotfiles ]]; then
   wget -qO- -O tmp.zip $tmpzip && unzip -d ~ tmp.zip && rm tmp.zip
   mv ~/dotfiles-master ~/.dotfiles
   cd ~/.dotfiles
-else
-  # Make sure we have the latest files.
-  e_header "Updating dotfiles"
-  rm -rf ~/.dotfiles/cache/dotfiles-old
-  mv ~/.dotfiles ~/dotfiles-old
-  tmpzip="https://github.com/mhglover/dotfiles/archive/master.zip"
-  wget -qO- -O tmp.zip $tmpzip && unzip -d ~ tmp.zip && rm tmp.zip
-  mv ~/dotfiles-master ~/.dotfiles
-  cd ~/.dotfiles
-  mkdir -p "$HOME/.dotfiles/caches"  
-  mv ~/dotfiles-old "$HOME/.dotfiles/caches"  
+# else
+#   # Make sure we have the latest files.
+#   edotfiles"
+#   rm -rf ~/.dotfiles/cache/dotfiles-old
+#   mv ~/.dotfiles ~/dotfiles-old
+#   tmpzip="https://github.com/mhglover/dotfiles/archive/master.zip"
+#   wget -qO- -O tmp.zip $tmpzip && unzip -d ~ tmp.zip && rm tmp.zip
+#   mv ~/dotfiles-master ~/.dotfiles
+#   cd ~/.dotfiles
+#   mkdir -p "$HOME/.dotfiles/caches"  
+  # mv ~/dotfiles-old "$HOME/.dotfiles/caches"  
 fi
 
 # Utilities, helpers.
