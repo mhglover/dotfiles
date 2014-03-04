@@ -25,7 +25,14 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias -- -='cd -'
 
-function cd { builtin cd "$1" && ls; }
+function cd { 
+    if [[ $1 == "" ]]; then
+        builtin cd
+        ls
+    else
+        builtin cd "$1" && ls
+    fi
+}
 function ccd { builtin cd "$1"; }
 
 # File size
@@ -47,3 +54,14 @@ function md() {
 _Z_NO_PROMPT_COMMAND=1
 _Z_DATA=~/.dotfiles/caches/.z
 . ~/.dotfiles/libs/z/z.sh
+
+
+# Local Ubuntu-only alias for opening the current directory in the file browser
+if [[ ! "$SSH_TTY" && "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] ; then
+  alias f="xdg-open ."
+elif [[ ! "$SSH_TTY" && "$OSTYPE" =~ ^darwin ]] ; then
+  alias f='open .'
+fi
+
+#quickalias for FUSE mountpoints
+alias cdm="cd ~/mounts"
