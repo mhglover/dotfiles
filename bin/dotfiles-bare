@@ -125,51 +125,8 @@ function do_stuff() {
 
 # Enough with the functions, let's do stuff.
 
-# # Ensure that we can actually, like, compile anything.
-if [[ ! "$(type -P gcc)" && "$OSTYPE" =~ ^darwin ]]; then
-  e_error "XCode or the Command Line Tools for XCode must be installed first."
-  exit 1
-fi
-
-# we leave git out in the bare version
-# # If Git is not installed, install it (Ubuntu only, since Git comes standard
-# # with recent XCode or CLT)
-# if [[ ! "$(type -P git)" && "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]]; then
-#   e_header "Installing Git"
-#   sudo apt-get -qq install git-core
-# fi
-
-# # If Git isn't installed by now, something exploded. We gots to quit!
-# if [[ ! "$(type -P git)" ]]; then
-#   e_error "Git should be installed. It isn't. Aborting."
-#   exit 1
-# fi
-
 # Update existing sudo time stamp if set, otherwise do nothing.
 # while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-# Initialize.
-if [[ ! -d ~/.dotfiles ]]; then
-  new_dotfiles_install=1
-  # ~/.dotfiles doesn't exist? Clone it!
-  # we don't necessarily have git, so we need another way of pulling this down
-  e_header "Downloading dotfiles"
-  tmpzip="https://github.com/mhglover/dotfiles/archive/master.zip"
-  wget -qO- -O tmp.zip $tmpzip && unzip -d ~ tmp.zip && rm tmp.zip
-  mv ~/dotfiles-master ~/.dotfiles
-  cd ~/.dotfiles
-# else
-#   # Make sure we have the latest files.
-#   edotfiles"
-#   rm -rf ~/.dotfiles/cache/dotfiles-old
-#   mv ~/.dotfiles ~/dotfiles-old
-#   tmpzip="https://github.com/mhglover/dotfiles/archive/master.zip"
-#   wget -qO- -O tmp.zip $tmpzip && unzip -d ~ tmp.zip && rm tmp.zip
-#   mv ~/dotfiles-master ~/.dotfiles
-#   cd ~/.dotfiles
-#   mkdir -p "$HOME/.dotfiles/caches"  
-  # mv ~/dotfiles-old "$HOME/.dotfiles/caches"  
-fi
 
 # Utilities, helpers.
 source ~/.dotfiles/source/10_misc.sh
@@ -179,8 +136,8 @@ PATH=~/.dotfiles/bin:$PATH
 export PATH
 
 # Tweak file globbing.
-shopt -s dotglob
-shopt -s nullglob
+shopt -s dotglob    #Bash includes filenames beginning with a ‘.’ in the results of filename expansion.
+shopt -s nullglob   # Bash allows filename patterns which match no files to expand to a null string, rather than themselves.
 
 # Create caches directory, if it doesn't already exist.
 mkdir -p "$HOME/.dotfiles/caches"
@@ -196,6 +153,10 @@ do_stuff "link"
 
 # Alert if backups were made.
 if [[ "$backup" ]]; then
+  #fix ssh authorized hosts
+  if [[ -e "${backup_dir}.ssh/authorized_keys" ]]; then
+    cat "${backup_dir}.ssh/authorized_keys" >> "$HOME/.ssh/authorized_keys"
+  fi
   echo -e "\nBackups were moved to ~/${backup_dir#$HOME/}"
 fi
 
