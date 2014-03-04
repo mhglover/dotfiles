@@ -65,3 +65,35 @@ fi
 
 #quickalias for FUSE mountpoints
 alias cdm="cd ~/mounts"
+
+#deploy dotfiles to a host via rsync
+df-deploy() {
+  if [[ $1 == "" ]] ; then
+    echo "usage: df-deploy <hostname> # specify a hostname to rsync dotfiles to"
+    return 1
+  fi
+
+  #set up ssh login
+  ssh-copy-id "$1"
+
+  #sync the files over there
+  #then run dotfiles-bare to update everything
+  rsync -av                       \
+    --exclude=".git*"             \
+    --exclude="cache*"            \
+    --exclude="backups*"          \
+    --exclude="unused"            \
+    --exclude="libs/git-extra*"   \
+    --exclude="link/.ssh/authorized_keys" \
+    .dotfiles/ "$1":.dotfiles/    \
+    && ssh "$1" "bash ~/.dotfiles/bin/dotfiles-bare" \
+    && ssh "$1"  #then finally connect
+}
+
+function cphistory() {
+  if [[ $1 == "" ]] ; then
+    echo "usage: cphistory <username> # specify a username to copy history from"
+    return 1
+  fi
+  sudo cp $HOME/../$1/.bash_history $HOME/$1_bash_history && sudo chown $USER.$USER $HOME/$1_bash_history
+}
