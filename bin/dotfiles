@@ -133,7 +133,7 @@ fi
 
 # If Git is not installed, install it (Ubuntu only, since Git comes standard
 # with recent XCode or CLT)
-if [[ ! "$(type -P git)" && "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]]; then
+if [[ ! "$(type -P git)" && "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu && ! "$SSH_TTY" ]]; then
   e_header "Installing Git"
   sudo apt-get -qq install git-core
 fi
