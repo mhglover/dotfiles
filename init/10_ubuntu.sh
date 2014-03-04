@@ -5,7 +5,7 @@
 [[ ! "$SSH_TTY" ]] || return 1
 
 # If the old files isn't removed, the duplicate APT alias will break sudo!
-sudoers_old="/etc/sudoers.d/sudoers-cowboy"; [[ -e "$sudoers_old" ]] && sudo rm "$sudoers_old"
+sudoers_old="/etc/sudoers.d/sudoers-mglover"; [[ -e "$sudoers_old" ]] && sudo rm "$sudoers_old"
 
 # Installing this sudoers file makes life easier.
 sudoers_file="sudoers-dotfiles"
