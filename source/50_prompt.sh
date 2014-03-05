@@ -139,6 +139,7 @@ function prompt_command() {
   # exit code: 127
   PS1="$PS1$(prompt_exitcode "$exit_code")"
   PS1="$PS1 \$ "
+  echo -ne "\033]0;${HOSTNAME}\007"
 }
 
 PROMPT_COMMAND="prompt_command"
