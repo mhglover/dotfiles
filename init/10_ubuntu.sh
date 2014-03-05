@@ -2,7 +2,7 @@
 [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || return 1
 
 #only run if local
-[[ ! "$SSH_TTY" ]] || return 1
+[[ "$SSH_TTY" ]] || return 1
 
 # If the old files isn't removed, the duplicate APT alias will break sudo!
 sudoers_old="/etc/sudoers.d/sudoers-mglover"; [[ -e "$sudoers_old" ]] && sudo rm "$sudoers_old"
