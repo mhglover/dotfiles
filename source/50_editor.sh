@@ -34,6 +34,8 @@ elif [[ ! "$SSH_TTY" && "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]]; then
   export EDITOR='/usr/bin/subl -w'
   export LESSEDIT='/usr/bin/subl %f'
   alias q='/usr/bin/subl'
+  alias sudoq="sudo /usr/bin/subl"
+
 
 else
     #use "subl" for rmate rather than trying to run subl via the alias
@@ -41,6 +43,8 @@ else
     export EDITOR=$(type rmate vim vi nano pico 2>/dev/null | sed 's/ .*$//;q')
     alias q="$EDITOR"
     # alias q="$EDITOR -w -z"
+    alias sudoq="sudo $HOME/.dotfiles/bin/rmate"
+
 fi
 
 export VISUAL="$EDITOR"
