@@ -3,7 +3,7 @@
 # dirs  755 drwxr-xr-x (777 minus 022)
 umask 022
 
-# Always use color output for `ls`
+# Mostly always use color output for `ls`
 if [[ "$OSTYPE" =~ ^darwin ]]; then
   alias ls="command ls -G"
 elif [[ "$OSTYPE" =~ ^solaris ]]; then
@@ -15,10 +15,11 @@ fi
 
 # Directory listing
 if [[ "$(type -P tree)" ]]; then
-  alias ll='tree --dirsfirst -aLpughDFiC 1'
+  #alias ll='tree --dirsfirst -aLpughDFiC 1'
+  alias ll='ls -ltr'
   alias lsd='ll -d'
 else
-  alias ll='ls -al'
+  alias ll='ls -latr'
   alias lsd='CLICOLOR_FORCE=1 ll | grep --color=never "^d"'
 fi
 
@@ -80,7 +81,7 @@ df-deploy() {
 
   #sync the files over there
   #then run dotfiles-bare to update everything
-  rsync -av                       \
+  rsync -a                        \
     --exclude=".git*"             \
     --exclude="cache*"            \
     --exclude="backups*"          \
@@ -98,7 +99,8 @@ df-deploy() {
       --exclude="link/.ssh/authorized_keys" \
       ".dotfiles/"
     scp /tmp/df.tar "$1":
-    ssh "$1" tar -xf df.tar
+
+    ssh "$1" tar -xf df.tar && ssh "$1" rm df.tar
   fi
 
   if [[ $? == 0 ]]; then
@@ -108,10 +110,10 @@ df-deploy() {
 
 }
 
-function cphistory() {
+function lesshistory() {
   if [[ $1 == "" ]] ; then
-    echo "usage: cphistory <username> # specify a username to copy history from"
+    echo "usage: lesshistory <username> # specify a username to view history from"
     return 1
   fi
-  sudo cp $HOME/../$1/.bash_history $HOME/$1_bash_history && sudo chown $USER.$USER $HOME/$1_bash_history
+  sudo less "$(grep root /etc/passwd | cut -d ":" -f 6)/.bash_history"
 }
