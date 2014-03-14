@@ -1,0 +1,1 @@
+#Solaris only junk - abort if not SunOS
