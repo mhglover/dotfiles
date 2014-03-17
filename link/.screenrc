@@ -1,0 +1,6 @@
+#caption always "%{= kc}%H (system load: %l)  %{= bw}%50<%n%f* %t%{-}%+Lw%>"
+caption always "%{= km}[ %H ]    %{= kc}%-w%{= bw}%n* %t%{= kc}%+w  %=%{= ky}Load: %l"
+
+
+bind R eval "source $HOME/.screenrc" "echo '.screenrc reloaded!'"
+
