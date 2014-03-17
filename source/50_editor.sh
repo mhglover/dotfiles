@@ -23,7 +23,7 @@ elif [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]]; then
       subl_path='/usr/bin/subl'
       if test -t 0
       then
-          "$subl_path" "$*"
+          "$subl_path" $*
       else
           timestamp=`date +%s`
           filename=$1
@@ -51,7 +51,7 @@ elif [[ "$(cat /etc/issue 2> /dev/null)" =~ Mint ]]; then
       subl_path='/usr/bin/subl'
       if test -t 0
       then
-          "$subl_path" "$*"
+          "$subl_path" $*
       else
           timestamp=`date +%s`
           filename="$1"
