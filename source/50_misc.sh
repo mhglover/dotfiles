@@ -22,3 +22,4 @@ fi
 
 
 alias sudo="sudo "  # allows sudo to expand aliases
+alias ansible='ansible -u ansible --private-key=~/.ssh/ansible_id_rsa ' #run ansible as the appropriate user
