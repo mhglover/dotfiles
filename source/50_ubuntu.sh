@@ -1,5 +1,5 @@
 # Ubuntu-only stuff. Abort if not Ubuntu.
-[[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || return 1
+[[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || [[ "$(cat /etc/issue 2> /dev/null)" =~ Mint ]] || return 1
 
 # Package management
 alias update="sudo apt-get -qq update && sudo apt-get upgrade"
