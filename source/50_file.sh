@@ -60,7 +60,7 @@ function md() {
 
 
 # Local Ubuntu-only alias for opening the current directory in the file browser
-if [[ ! "$SSH_TTY" && "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] ; then
+if [[ ! "$SSH_TTY" && "$(uname -a 2> /dev/null)" =~ Linux ]] ; then
   alias f="xdg-open ."
 elif [[ ! "$SSH_TTY" && "$OSTYPE" =~ ^darwin ]] ; then
   alias f='open .'
