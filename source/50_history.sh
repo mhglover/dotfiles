@@ -2,8 +2,11 @@
 
 # Allow use to re-edit a faild history substitution.
 shopt -s histreedit
-# History expansions will be verified before execution.
-shopt -s histverify
+# History expansions will not be verified before execution.
+shopt -u histverify
+
+# save all lines of a multiple-line command in the same history entry. This allows easy re-editing of multi-line commands.
+shopt -s cmdhist
 
 # Entries beginning with space aren't added into history, and duplicate
 # entries will be erased (leaving the most recent entry).
