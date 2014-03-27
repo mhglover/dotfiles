@@ -23,3 +23,27 @@ fi
 
 alias sudo="sudo "  # allows sudo to expand aliases
 alias ansible='ansible -u ansible --private-key=~/.ssh/ansible_id_rsa ' #run ansible as the appropriate user
+
+function min {
+    if [ "$1" == "" ]; then echo "specify a value"; return; fi
+    echo -n "$1" > .config/autokey/data/My\ Phrases/Temporary/min.txt
+    export MIN="$1"
+}
+
+function mdn {
+    if [ "$1" == "" ]; then echo "specify a value"; return; fi
+    echo -n "$1" > .config/autokey/data/My\ Phrases/Temporary/mdn.txt
+    export MDN="$1"
+}
+
+function mip {
+    if [ "$1" == "" ]; then echo "specify a value"; return; fi
+    echo -n "$1" > .config/autokey/data/My\ Phrases/Temporary/mip.txt
+    export MIP="$1"
+}
+
+function imsi {
+    if [ "$1" == "" ]; then echo "specify a value"; return; fi
+    echo -n "$1" > .config/autokey/data/My\ Phrases/Temporary/imsi.txt
+    export IMSI="$1"
+}
