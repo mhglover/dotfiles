@@ -104,7 +104,7 @@ df-deploy() {
   if [[ $? == 0 ]]; then
     #then run dotfiles-bare to update everything
     ssh "$1" "bash ~/.dotfiles/bin/dotfiles-bare"
-    ssh "$1"  #then finally connect
+    # ssh "$1"  #then finally connect
   fi
 
 }
