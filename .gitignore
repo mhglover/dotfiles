@@ -6,3 +6,4 @@ link/.ssh/github_rsa*
 link/.ssh/known_hosts
 link/.ssh/config
 *LOCAL*
+source/*private*
