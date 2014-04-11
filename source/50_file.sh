@@ -77,7 +77,7 @@ df-deploy() {
   fi
 
   #set up ssh login
-  ssh-copy-id "$1"
+  # ssh-copy-id "$1"
 
   #sync the files over there
   rsync -a                        \
