@@ -113,6 +113,9 @@ function prompt_command() {
   [[ "${prompt_stack[0]}" == "prompt_command" ]] && exit_code=0
   prompt_stack=()
 
+  #write every command to history immediately - those who do not learn from history something something something
+  history -a  
+
   # Manually load z here, after $? is checked, to keep $? from being clobbered.
   [[ "$(type -t _z)" ]] && _z --add "$(pwd -P 2>/dev/null)" 2>/dev/null
 
