@@ -7,3 +7,4 @@ link/.ssh/known_hosts
 link/.ssh/config
 *LOCAL*
 source/*private*
+source/60_aliases.sh
