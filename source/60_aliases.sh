@@ -1,5 +1,6 @@
 # alias last and save
 # use `als c NAME` to chop off the last argument (for filenames/patterns)
+# from http://brettterpstra.com/2013/08/30/easily-save-that-wicked-awesome-shell-command/
 als() {
     local aliasfile chop x
     [[ $# == 0 ]] && echo "Name your alias" && return
