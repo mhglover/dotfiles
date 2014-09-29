@@ -14,6 +14,16 @@ elif [[ "$SSH_TTY" ]]; then
 
 elif [[ "$OSTYPE" =~ ^darwin ]]; then
   #local and on a Mac
+  
+  #make sure we have an alias for Sublime Text 3
+  if [[ -e "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ]] && [[ ! -e "$HOME/bin/subl" ]]; then
+    echo "Creating a link for Sublime Text 3"
+    if [[ ! -e "$HOME/bin" ]]; then
+      mkdir "$HOME/bin"
+    fi
+    ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ~/bin/subl
+  fi
+
   export EDITOR='subl -w'
   export LESSEDIT='subl %f'
   alias q='subl'
