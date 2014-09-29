@@ -23,3 +23,5 @@ als() {
     fi
 }
 
+
+alias reissue="ssh prodopwvpspdb2 pass_reissue.py"
