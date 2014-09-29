@@ -69,4 +69,5 @@ function txt_sub_restore() {
   for cmd in "${cmds[@]}"; do /usr/libexec/PlistBuddy -c "$cmd" "$prefs"; done
 }
 
-# TODO - add a growl notify alias
+#OS X needs a place for ansible
+export ANSIBLE_HOSTS=$HOME/Dropbox/etc/ansible/hosts
