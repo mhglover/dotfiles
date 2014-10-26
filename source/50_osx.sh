@@ -71,3 +71,6 @@ function txt_sub_restore() {
 
 #OS X needs a place for ansible
 export ANSIBLE_HOSTS=$HOME/Dropbox/etc/ansible/hosts
+
+#alternative colorized file viewer
+lessc () { /usr/share/vim/vim73/macros/less.sh "$@"}
