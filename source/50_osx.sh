@@ -73,4 +73,6 @@ function txt_sub_restore() {
 export ANSIBLE_HOSTS=$HOME/Dropbox/etc/ansible/hosts
 
 #alternative colorized file viewer
-lessc () { /usr/share/vim/vim73/macros/less.sh "$@"}
+alias less="/usr/share/vim/vim73/macros/less.sh"
+
+function lls { builtin cd "$1"; }
