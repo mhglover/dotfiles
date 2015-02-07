@@ -74,7 +74,7 @@ df-deploy() {
   fi
 
   #set up ssh login
-  # ssh-copy-id "$1"
+  ssh-copy-id "$1"
 
   #sync the files over there
   rsync -a                        \
@@ -83,7 +83,7 @@ df-deploy() {
     --exclude="backups*"          \
     --exclude="libs/git-extra*"   \
     --exclude="link/.ssh/authorized_keys" \
-    .dotfiles/ "$1":.dotfiles/    \
+    "$HOME/.dotfiles/" "$1":.dotfiles/    \
 
   if [[ $? == 127 ]]; then
     #no rsync on remote host - use tar and scp instead
@@ -93,14 +93,14 @@ df-deploy() {
       --exclude="backups*"          \
       --exclude="libs/git-extra*"   \
       --exclude="link/.ssh/authorized_keys" \
-      ".dotfiles/" \
+      "$HOME/.dotfiles/" \
     && scp /tmp/df.tar "$1": \
     && ssh "$1" tar -xf df.tar && ssh "$1" rm df.tar
   fi
 
   if [[ $? == 0 ]]; then
     #then run dotfiles-bare to update everything
-    ssh "$1" "bash ~/.dotfiles/bin/dotfiles-bare"
+    ssh "$1" "bash $HOME/.dotfiles/bin/dotfiles-bare"
     # ssh "$1"  #then finally connect
   fi
 
