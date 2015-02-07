@@ -17,8 +17,10 @@ function titlebar() {
 
 # SSH auto-completion based on entries in known_hosts.
 # This requires hashing to be turned off
-# if [[ -e ~/.ssh/known_hosts ]]; then
-#   complete -o default -W "$(cat ~/.ssh/known_hosts | sed 's/[, ].*//' | sort | uniq | grep -v '[0-9]')" ssh scp sftp
-# fi
+if [[ -e ~/.ssh/known_hosts ]]; then
+   complete -o default -W "$(cat ~/.ssh/known_hosts | sed 's/[, ].*//' | sort | uniq )" ssh scp sftp
+fi
 
 alias sudo="sudo "  # allows sudo to expand aliases
+
+alias arg='sudo $(history -p \!\!)'
