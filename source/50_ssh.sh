@@ -1,5 +1,5 @@
 #enable ssh autocompletion
-complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
+# complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
 
 
 # from http://brettterpstra.com/2013/02/10/the-joy-of-sshfs/
