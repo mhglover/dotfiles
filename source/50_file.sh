@@ -53,11 +53,6 @@ function md() {
   mkdir -p "$@" && cd "$@"
 }
 
-# Fast directory switching
-# _Z_NO_PROMPT_COMMAND=1
-# _Z_DATA=~/.dotfiles/caches/.z
-# . ~/.dotfiles/libs/z/z.sh
-
 
 # Local Ubuntu-only alias for opening the current directory in the file browser
 if [[ ! "$SSH_TTY" && "$(uname -a 2> /dev/null)" =~ Mint ]] ; then
