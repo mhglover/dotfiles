@@ -1,3 +1,4 @@
+LPASS_AGENT_TIMEOUT='0'
 
 # Lastpass shortcuts
 
