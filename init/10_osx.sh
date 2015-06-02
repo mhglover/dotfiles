@@ -39,11 +39,11 @@ if [[ "$(type -P brew)" ]]; then
   local binroot="$(brew --config | awk '/HOMEBREW_PREFIX/ {print $2}')"/bin
 
   # htop
-  if [[ "$(type -P $binroot/htop)" && "$(stat -L -f "%Su:%Sg" "$binroot/htop")" != "root:wheel" || ! "$(($(stat -L -f "%DMp" "$binroot/htop") & 4))" ]]; then
-    e_header "Updating htop permissions"
-    sudo chown root:wheel "$binroot/htop"
-    sudo chmod u+s "$binroot/htop"
-  fi
+  # if [[ "$(type -P $binroot/htop)" && "$(stat -L -f "%Su:%Sg" "$binroot/htop")" != "root:wheel" || ! "$(($(stat -L -f "%DMp" "$binroot/htop") & 4))" ]]; then
+  #   e_header "Updating htop permissions"
+  #   sudo chown root:wheel "$binroot/htop"
+  #   sudo chmod u+s "$binroot/htop"
+  # fi
 
   # bash
   if [[ "$(type -P $binroot/bash)" && "$(cat /etc/shells | grep -q "$binroot/bash")" ]]; then
