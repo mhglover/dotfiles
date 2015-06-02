@@ -24,3 +24,8 @@ fi
 alias sudo="sudo "  # allows sudo to expand aliases
 
 alias arg='sudo $(history -p \!\!)'
+
+function sc {
+    ssh-copy-id $1
+    ssh $1
+}
