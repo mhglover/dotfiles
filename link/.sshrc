@@ -1,2 +1,387 @@
+#Detect what OS we're using
+if [[ $(cat /etc/issue 2> /dev/null) =~ BIG-IP ]]; then
+  OSTYPE="F5"
+fi
+
+
+PATH="$PATH:/sbin"
+
+myip=$(echo $SSH_CLIENT | awk '{print $1}')
 alias allcron='for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -u $user -l; done'
 alias allcronsolaris='for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -ul $user ; done'
+
+# Set my EDITOR variable well
+# --------------------------------------------------------
+
+if [[ $(lsb_release -a 2> /dev/null | grep Release | cut -f 2) == "7\.04" ]]; then
+  #an old version of Ubuntu - specifically optimus
+    export EDITOR=$(type vim vi nano pico 2>/dev/null | sed 's/ .*$//;q')
+    alias q="$EDITOR"
+elif [[ "$SSH_TTY" ]]; then
+    #use "subl" for rmate rather than trying to run subl via the alias
+    alias subl='rmate'
+    export EDITOR=$(type rmate vim vi nano pico 2>/dev/null | sed 's/ .*$//;q')
+    alias q="$EDITOR"
+    # alias q="$EDITOR -w -z"
+    #alias sudoq="sudo $HOME/.dotfiles/bin/rmate"
+    alias sudoq="sudo $EDITOR"
+
+elif [[ "$OSTYPE" =~ ^darwin ]]; then
+  #local and on a Mac
+  
+  #make sure we have an alias for Sublime Text 3
+  if [[ -e "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ]] && [[ ! -e "$HOME/bin/subl" ]]; then
+    echo "Creating a link for Sublime Text 3"
+    if [[ ! -e "$HOME/bin" ]]; then
+      mkdir "$HOME/bin"
+    fi
+    ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ~/bin/subl
+  fi
+
+  export EDITOR='subl -w'
+  export LESSEDIT='subl %f'
+  alias q='subl'
+elif [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]]; then
+  # local and on Ubuntu - Enable the use of the `subl` command
+  subl () {
+      subl_path='/usr/bin/subl'
+      if test -t 0
+      then
+          "$subl_path" $*
+      else
+          timestamp=`date +%s`
+          filename=$1
+          shift
+          if [ -z $filename ]; then filename=".temp$timestamp" ; fi
+          touch "$filename"
+          while read data
+          do
+              echo "$data" >> "$filename"
+          done
+          "$subl_path" "$filename" $*
+          sleep 1
+          rm "$filename"
+      fi
+  }
+
+  export EDITOR='/usr/bin/subl -w'
+  export LESSEDIT='/usr/bin/subl %f'
+  alias q='/usr/bin/subl'
+  alias sudoq="sudo /usr/bin/subl"
+
+elif [[ "$(cat /etc/issue 2> /dev/null)" =~ Mint ]]; then
+  # local and on Mint - Enable the use of the `subl` command
+  subl () {
+      subl_path='/usr/bin/subl'
+      if test -t 0
+      then
+          "$subl_path" $*
+      else
+          timestamp=`date +%s`
+          filename="$1"
+          shift
+          if [ -z $filename ]; then filename=".temp$timestamp" ; fi
+          touch "$filename"
+          while read data
+          do
+              echo "$data" >> "$filename"
+          done
+          "$subl_path" "$filename" $*
+          sleep 1
+          rm "$filename"
+      fi
+  }
+
+  export EDITOR='/usr/bin/subl -w'
+  export LESSEDIT='/usr/bin/subl %f'
+  alias q='/usr/bin/subl'
+  alias sudoq="sudo /usr/bin/subl"
+
+else 
+  # we're local, but I don't know what system we're on.
+    export EDITOR=$(type subl rmate vim vi nano pico 2>/dev/null | sed 's/ .*$//;q')
+fi
+
+export VISUAL="$EDITOR"
+
+alias q.='q .'
+
+
+# Do smart file stuff
+# --------------------------------------------------------
+function cd { 
+    if [[ $1 == "" ]]; then
+        builtin cd
+        ls
+    else
+        builtin cd "$1" && ls
+    fi
+}
+function ccd { builtin cd "$1"; }
+
+# Mostly always use color output for `ls`
+if [[ "$OSTYPE" =~ ^darwin ]]; then
+  alias ls="command ls -G"
+elif [[ "$OSTYPE" =~ ^solaris ]]; then
+  alias ls="command ls -p"
+else
+  alias ls="command ls --color"
+  export LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
+fi
+
+# Sudo stuff
+# --------------------------------------------------------
+alias sudo="sudo "  # allows sudo to expand aliases
+alias arg='sudo $(history -p \!\!)'
+
+
+# Prompt Nicely
+# --------------------------------------------------------
+# Cowboy's awesome bash prompt
+#
+# Copyright (c) 2012 "Cowboy" Ben Alman
+# Licensed under the MIT license.
+# http://benalman.com/about/license/
+#
+# Example:
+# [master:!?][cowboy@CowBook:~/.dotfiles]
+# [11:14:45] $
+#
+# Read more (and see a screenshot) in the "Prompt" section of
+# https://github.com/cowboy/dotfiles
+
+# ANSI CODES - SEPARATE MULTIPLE VALUES WITH ;
+#
+#  0  reset          4  underline
+#  1  bold           7  inverse
+#
+# FG  BG  COLOR     FG  BG  COLOR
+# 30  40  black     34  44  blue
+# 31  41  red       35  45  magenta
+# 32  42  green     36  46  cyan
+# 33  43  yellow    37  47  white
+
+if [[ ! "${prompt_colors[@]}" ]]; then
+  prompt_colors=(
+    "36" # information color
+    "37" # bracket color
+    "31" # error color
+  )
+
+  if [[ "$SSH_TTY" ]]; then
+    # connected via ssh
+    prompt_colors[0]="32"
+  elif [[ "$USER" == "root" ]]; then
+    # logged in as root
+    prompt_colors[0]="35"
+  fi
+fi
+
+# Inside a prompt function, run this alias to setup local $c0-$c9 color vars.
+alias prompt_getcolors='prompt_colors[9]=; local i; for i in ${!prompt_colors[@]}; do local c$i="\[\e[0;${prompt_colors[$i]}m\]"; done'
+
+# Exit code of previous command.
+function prompt_exitcode() {
+  prompt_getcolors
+  [[ $1 != 0 ]] && echo " $c2$1$c9"
+}
+
+# Git status.
+function prompt_git() {
+  prompt_getcolors
+  local status output flags
+  status="$(git status 2>/dev/null)"
+  [[ $? != 0 ]] && return;
+  output="$(echo "$status" | awk '/# Initial commit/ {print "(init)"}')"
+  [[ "$output" ]] || output="$(echo "$status" | awk '/# On branch/ {print $4}')"
+  [[ "$output" ]] || output="$(git branch | perl -ne '/^\* (.*)/ && print $1')"
+  flags="$(
+    echo "$status" | awk 'BEGIN {r=""} \
+      /Changes to be committed:$/        {r=r "+"}\
+      /Changes not staged for commit:$/  {r=r "!"}\
+      /Untracked files:$/                {r=r "?"}\
+      END {print r}'
+  )"
+  if [[ "$flags" ]]; then
+    output="$output$c1:$c0$flags"
+  fi
+  echo "$c1[$c0$output$c1]$c9"
+}
+
+# hg status.
+function prompt_hg() {
+  prompt_getcolors
+  local summary output bookmark flags
+  summary="$(hg summary 2>/dev/null)"
+  [[ $? != 0 ]] && return;
+  output="$(echo "$summary" | awk '/branch:/ {print $2}')"
+  bookmark="$(echo "$summary" | awk '/bookmarks:/ {print $2}')"
+  flags="$(
+    echo "$summary" | awk 'BEGIN {r="";a=""} \
+      /(modified)/     {r= "+"}\
+      /(unknown)/      {a= "?"}\
+      END {print r a}'
+  )"
+  output="$output:$bookmark"
+  if [[ "$flags" ]]; then
+    output="$output$c1:$c0$flags"
+  fi
+  echo "$c1[$c0$output$c1]$c9"
+}
+
+# SVN info.
+function prompt_svn() {
+  prompt_getcolors
+  local info="$(svn info . 2> /dev/null)"
+  local last current
+  if [[ "$info" ]]; then
+    last="$(echo "$info" | awk '/Last Changed Rev:/ {print $4}')"
+    current="$(echo "$info" | awk '/Revision:/ {print $2}')"
+    echo "$c1[$c0$last$c1:$c0$current$c1]$c9"
+  fi
+}
+
+
+# Maintain a per-execution call stack.
+prompt_stack=()
+trap 'prompt_stack=("${prompt_stack[@]}" "$BASH_COMMAND")' DEBUG
+
+function prompt_command() {
+  local exit_code=$?
+  # If the first command in the stack is prompt_command, no command was run.
+  # Set exit_code to 0 and reset the stack.
+  [[ "${prompt_stack[0]}" == "prompt_command" ]] && exit_code=0
+  prompt_stack=()
+
+  #write every command to history immediately - those who do not learn from history something something something
+  history -a  
+
+  # Manually load z here, after $? is checked, to keep $? from being clobbered.
+  [[ "$(type -t _z)" ]] && _z --add "$(pwd -P 2>/dev/null)" 2>/dev/null
+
+  # While the simple_prompt environment var is set, disable the awesome prompt.
+  [[ "$simple_prompt" ]] && PS1='\n$ ' && return
+
+
+  prompt_getcolors
+  # http://twitter.com/cowboy/status/150254030654939137
+  PS1=""
+  # PS1="\n"
+  # svn: [repo:lastchanged]
+  PS1="$PS1$(prompt_svn)"
+  # git: [branch:flags]
+  PS1="$PS1$(prompt_git)"
+  # hg:  [branch:flags]
+  PS1="$PS1$(prompt_hg)"
+  PS1="$PS1${VENV}"
+  # misc: [cmd#:hist#]
+  # PS1="$PS1$c1[$c0#\#$c1:$c0!\!$c1]$c9"
+  # path: [user@host:path]
+  PS1="$PS1$c1[$c0\u$c1@$c0\h$c1:$c0\w$c1]$c9"
+  # PS1="$PS1\n"
+  # date: [HH:MM:SS]
+  # PS1="$PS1$c1[$c0$(date +"%H$c1:$c0%M$c1:$c0%S")$c1]$c9"
+  # exit code: 127
+  PS1="$PS1$(prompt_exitcode "$exit_code")"
+  PS1="$PS1 \$ "
+  echo -ne "\033]0;${HOSTNAME}\007"
+}
+
+if [[ $OSTYPE != "F5" ]] ; then
+  PROMPT_COMMAND="prompt_command"
+fi
+
+
+# SSH Goodness
+# -------------------------------------------------------- 
+# SSH auto-completion based on entries in known_hosts.
+# This requires hashing to be turned off
+if [[ -e ~/.ssh/known_hosts ]]; then
+   complete -o default -W "$(cat ~/.ssh/known_hosts | sed 's/[, ].*//' | sort | uniq )" ssh scp sftp
+fi
+
+
+# Aliases
+
+alias labdappermod='ldapmodify -v -D cn=root -w secret -h testsur -p 5005 -f'
+alias labdapperadd='ldapadd -v -D cn=root -w secret -h testsur -p 5005 -f'
+alias labdappersearch='ldapsearch -LLL -x -D cn=root -w secret -b "dc=cellularsouth,dc=net" -h testsur -p 5005'
+
+#look up details in the LDAP based on a key
+alias dappersearch='ldapsearch -LLL -x -D cn=root -w secret -b "dc=cellularsouth,dc=net" -h prodvirdir -p 5005' # needs a key like cs-mdn=6016247594
+alias repsearch='ldapsearch -LLL -x -D cn=root -w secret -b "dc=cellularsouth,dc=net" -h proddrs -p 389' # needs a key like cs-mdn=6016247594
+
+alias dappermod='ldapmodify -v -D cn=root -w secret -h prodvirdir -p 5005 -f'
+alias dapperadd='ldapadd -v -D cn=root -w secret -h prodvirdir -p 5005 -f'
+
+alias dapperdel='ldapdelete -D cn=root -h prodvirdir -w secret -p 5005 '
+
+function dappacctsearch {
+    if [ $# != 1 ]; then 
+        echo "usage:    dappactsearch <account number>"
+        echo "example:  dappacctsearch 0068118531"
+        return
+    fi
+     ldapsearch -LLL -x -h prodvirdir -p 5005 -D cn=root -w secret -b cs-AccountNumber=$1,dc=cellularsouth,dc=net
+}
+
+function ds {
+    dappersearch cs-mdn=$1
+}
+
+function rs {
+    repsearch cs-mdn=$1
+}
+
+alias pc='passcheck'
+
+function pspfe-digger {
+    if [ $# != 2 ]; then echo "usage pspfe-digger <imsi> <number of days ago>"; return; fi
+    find /var/opt/opwv/logs/accounting/Archives/ -maxdepth 1 -daystart -mtime "$1" -exec zgrep -B4 -A4 "$2" {} \;
+}
+
+alias aansible='ansible -u ansible --private-key=~/.ssh/id_rsa_ansible ' #run ansible as the appropriate user
+alias aansible-playbook='ansible-playbook --private-key=~/.ssh/id_rsa_ansible'
+
+function showimsi {
+    if [ $# != 1 ]; then echo "usage $0 <imsi> "; return; fi
+    dappersearch cs-mdn=$1 | grep "cs-imsi:" | cut -f2 -d " "
+}
+
+function showmodel {
+    if [ $# != 1 ]; then echo "usage $0 <mdn> "; return; fi
+    dappersearch cs-mdn=$1 | grep "cs-model:" | cut -d " " -f 2-20
+}
+
+function showmap ()
+{
+    #look up an imsi/IP map on newprodopwvproxy1 based on MDN
+    #recommended - set up passwordless ssh-agent based logins on newprodopwvproxy1
+    if [ $# != 2 ]; then
+        echo "usage $0 <mdn> <X> where X is the proxy to use";
+        return;
+    fi;
+    imsi=$(dappersearch cs-mdn=$1 | awk '/cs-imsi:/ {print $2}');
+    echo "imsi:     $imsi";
+    server=newprodopwvproxy$2;
+    instancecall="sssh $server ps ax | grep -i nimserver | awk -F- '{print substr($2,10,length($2)-8);}' | tail -1"
+    echo $instancecall
+    instance=$($instancecall);
+    echo "instance: $instance";
+    sssh $server /opt/opwv/integra/3.1.2.3/bin/tools/NimClientTool -t 2 -v $imsi -c /etc/opwv/oam-v1.7/oam_bootstrap.xml -s $instance
+}
+
+function labshowmap ()
+{
+    if [ $# != 1 ]; then
+        echo "usage $0 <mdn> ";
+        return;
+    fi;
+    imsi=$(labdappersearch cs-mdn=$1 | awk '/cs-imsi:/ {print $2}');
+    echo "imsi:     $imsi";
+    server=testopwv3;
+    instance=$(sssh $server ps ax | grep -i nimserver | awk -F- '{print substr($2,10,length($2)-8);}' | tail -1);
+    echo "instance: $instance";
+    sssh $server /opt/opwv/integra/3.1.2.3/bin/tools/NimClientTool -t 2 -v $imsi -c /etc/opwv/oam-v1.7/oam_bootstrap.xml -s $instance
+}
+

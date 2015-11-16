@@ -102,6 +102,19 @@ function prompt_svn() {
   fi
 }
 
+# python virtual environment
+function virtualenv_info(){
+    # Get Virtual Env
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        # Strip out the path and just leave the env name
+        venv="${VIRTUAL_ENV##*/}"
+    else
+        # In case you don't have one activated
+        venv=''
+    fi
+    [[ -n "$venv" ]] && echo "(venv:$venv) "
+}
+
 # Maintain a per-execution call stack.
 prompt_stack=()
 trap 'prompt_stack=("${prompt_stack[@]}" "$BASH_COMMAND")' DEBUG
@@ -122,6 +135,8 @@ function prompt_command() {
   # While the simple_prompt environment var is set, disable the awesome prompt.
   [[ "$simple_prompt" ]] && PS1='\n$ ' && return
 
+  local VENV="\$(virtualenv_info)";
+
   prompt_getcolors
   # http://twitter.com/cowboy/status/150254030654939137
   PS1=""
@@ -132,6 +147,7 @@ function prompt_command() {
   PS1="$PS1$(prompt_git)"
   # hg:  [branch:flags]
   PS1="$PS1$(prompt_hg)"
+  PS1="$PS1${VENV}"
   # misc: [cmd#:hist#]
   # PS1="$PS1$c1[$c0#\#$c1:$c0!\!$c1]$c9"
   # path: [user@host:path]

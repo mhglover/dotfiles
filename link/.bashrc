@@ -1,5 +1,5 @@
 # Add binaries into the path
-PATH=~/.dotfiles/bin:$PATH:~/bin
+PATH=~/.dotfiles/bin:~/bin:/usr/local/sbin:$PATH
 export PATH
 
 # Source all files in ~/.dotfiles/source/

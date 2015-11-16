@@ -15,12 +15,9 @@ function titlebar() {
   echo -n $'\e]0;'"$*"$'\a'
 }
 
-# SSH auto-completion based on entries in known_hosts.
-# This requires hashing to be turned off
-if [[ -e ~/.ssh/known_hosts ]]; then
-   complete -o default -W "$(cat ~/.ssh/known_hosts | sed 's/[, ].*//' | sort | uniq )" ssh scp sftp
-fi
-
 alias sudo="sudo "  # allows sudo to expand aliases
 
 alias arg='sudo $(history -p \!\!)'
+
+# Autocompletion for itermocil 
+complete -W "$(itermocil --list)" itermocil

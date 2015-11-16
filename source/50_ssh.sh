@@ -1,3 +1,10 @@
+# SSH auto-completion based on entries in known_hosts.
+# This requires hashing to be turned off
+if [[ -e ~/.ssh/known_hosts ]]; then
+   complete -o default -W "$(cat ~/.ssh/known_hosts | sed 's/[, ].*//' | sort | uniq )" ssh scp sftp
+fi
+
+
 #enable ssh autocompletion
 # complete -W "$(echo $(grep '^ssh ' ~/.bash_history | sort -u | sed 's/^ssh //'))" ssh
 
@@ -39,15 +46,27 @@
 #     fi
 # }
 
-# Don't just ssh into a box.  If you don't already have your key there,
-# copy your key and *then* ssh in.
-function ssh { 
-    /usr/bin/ssh -o BatchMode=yes $1
-    if [[ $? -eq "255" ]]; then
-        ssh-copy-id $1
-        /usr/bin/ssh -o BatchMode=yes $1
-    fi
-}
+# Don't just ssh into a box.  Try to use sshrc, check for a key, 
+# If you don't already have your key there,
+# copy your key and *then* sshrc in.
 
 # Or if you absolutely need regular ssh, use the sssh alias
-alias sssh="/usr/bin/ssh $1"
+# alias sssh="/usr/bin/ssh $1"
+
+# function ssh { 
+#     if [[ $1 == "prodairman" ]]; then
+#         sshcommand="/usr/bin/ssh"
+#         #echo "sshing $1"
+#     else
+#         sshcommand="/Users/mglover/bin/sshrc"
+#         #echo "sshrcing $1"
+#     fi
+
+#     $sshcommand -o BatchMode=yes $1 
+#     if [[ $? -eq "255" ]]; then
+#         ssh-copy-id $1
+#         sshcommand -o BatchMode=yes $1
+#     fi
+#     #iterm2_print_state_data
+# }
+

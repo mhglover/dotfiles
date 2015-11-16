@@ -2,7 +2,7 @@
 # use `als c NAME` to chop off the last argument (for filenames/patterns)
 # from http://brettterpstra.com/2013/08/30/easily-save-that-wicked-awesome-shell-command/
 als() {
-    aliasfile="~/.dotfiles/source/60_aliases.sh"
+    aliasfile=~/.dotfiles/source/60_aliases.sh
     #local aliasfile chop x
     if [[ $# == 0 ]] ; then
         echo "Usage:"
@@ -30,5 +30,7 @@ als() {
 }
 
 
-alias reissue="ssh prodopwvpspdb2 pass_reissue.py"
+alias reissue="sssh prodopwvpspdb2 pass_reissue.py"
 alias usbterm="screen /dev/tty.usbserial 9600 ixon"
+
+alias o=open="s"
