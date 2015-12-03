@@ -364,11 +364,11 @@ function showmap ()
     imsi=$(dappersearch cs-mdn=$1 | awk '/cs-imsi:/ {print $2}');
     echo "imsi:     $imsi";
     server=newprodopwvproxy$2;
-    instancecall="sssh $server ps ax | grep -i nimserver | awk -F- '{print substr($2,10,length($2)-8);}' | tail -1"
+    instancecall="ssh $server ps ax | grep -i nimserver | awk -F- '{print substr($2,10,length($2)-8);}' | tail -1"
     echo $instancecall
     instance=$($instancecall);
     echo "instance: $instance";
-    sssh $server /opt/opwv/integra/3.1.2.3/bin/tools/NimClientTool -t 2 -v $imsi -c /etc/opwv/oam-v1.7/oam_bootstrap.xml -s $instance
+    ssh $server /opt/opwv/integra/3.1.2.3/bin/tools/NimClientTool -t 2 -v $imsi -c /etc/opwv/oam-v1.7/oam_bootstrap.xml -s $instance
 }
 
 function labshowmap ()
@@ -380,8 +380,8 @@ function labshowmap ()
     imsi=$(labdappersearch cs-mdn=$1 | awk '/cs-imsi:/ {print $2}');
     echo "imsi:     $imsi";
     server=testopwv3;
-    instance=$(sssh $server ps ax | grep -i nimserver | awk -F- '{print substr($2,10,length($2)-8);}' | tail -1);
+    instance=$(ssh $server ps ax | grep -i nimserver | awk -F- '{print substr($2,10,length($2)-8);}' | tail -1);
     echo "instance: $instance";
-    sssh $server /opt/opwv/integra/3.1.2.3/bin/tools/NimClientTool -t 2 -v $imsi -c /etc/opwv/oam-v1.7/oam_bootstrap.xml -s $instance
+    ssh $server /opt/opwv/integra/3.1.2.3/bin/tools/NimClientTool -t 2 -v $imsi -c /etc/opwv/oam-v1.7/oam_bootstrap.xml -s $instance
 }
 
