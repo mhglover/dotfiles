@@ -18,6 +18,3 @@ function titlebar() {
 alias sudo="sudo "  # allows sudo to expand aliases
 
 alias arg='sudo $(history -p \!\!)'
-
-# Autocompletion for itermocil 
-complete -W "$(itermocil --list)" itermocil
