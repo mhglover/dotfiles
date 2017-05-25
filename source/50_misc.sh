@@ -5,7 +5,7 @@ shopt -s nocaseglob
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-alias grep='grep -n --color'
+alias grep='grep --color'
 
 # Prevent less from clearing the screen while still showing colors.
 export LESS=-XR
@@ -18,3 +18,6 @@ function titlebar() {
 alias sudo="sudo "  # allows sudo to expand aliases
 
 alias arg='sudo $(history -p \!\!)'
+
+
+alias allcron='for I in $(getent passwd | cut -f1 -d":"); do echo $I; sudo crontab -lu $I 2>1 ; echo "---------------------" ; done | less'
