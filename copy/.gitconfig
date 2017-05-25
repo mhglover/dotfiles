@@ -10,6 +10,7 @@
 [alias]
   br = branch
 	ci = commit -v
+  cia = commit -v -a
   co = checkout
   df = diff
   g = grep -I
