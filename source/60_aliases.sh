@@ -28,9 +28,3 @@ als() {
         alias $1
     fi
 }
-
-
-alias reissue="ssh prodopwvpspdb2 pass_reissue.py"
-alias usbterm="screen /dev/tty.usbserial 9600 ixon"
-
-alias o=open="s"
