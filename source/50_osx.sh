@@ -18,6 +18,6 @@ alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resou
 export ANSIBLE_HOSTS=$HOME/Dropbox/etc/ansible/hosts
 
 #alternative colorized file viewer
-alias less="/usr/share/vim/vim73/macros/less.sh"
+#alias less="/usr/share/vim/vim73/macros/less.sh"
 
 function lls { builtin cd "$1"; }
