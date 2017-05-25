@@ -1,5 +1,5 @@
 # Add binaries into the path
-PATH=~/.dotfiles/bin:~/bin:/usr/local/sbin:$PATH
+PATH=~/.dotfiles/bin:~/bin:/usr/local/sbin:~/.chefdk/gem/ruby/2.3.0/bin:$PATH
 export PATH
 
 # Source all files in ~/.dotfiles/source/
