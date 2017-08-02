@@ -9,7 +9,7 @@ function src() {
     source "$HOME/.dotfiles/source/$1.sh"
   else
     for file in ~/.dotfiles/source/*; do
-      source "$file"
+     source "$file"
     done
   fi
 }
