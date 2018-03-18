@@ -21,3 +21,8 @@ export ANSIBLE_HOSTS=$HOME/Dropbox/etc/ansible/hosts
 #alias less="/usr/share/vim/vim73/macros/less.sh"
 
 function lls { builtin cd "$1"; }
+
+# Vagrant completion
+if [ -f `brew --prefix`/etc/bash_completion.d/vagrant ]; then
+    source `brew --prefix`/etc/bash_completion.d/vagrant
+fi
