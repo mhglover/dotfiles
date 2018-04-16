@@ -1,5 +1,7 @@
 # Editing
 
+fave="code"
+
 if [[ $(lsb_release -a 2> /dev/null | grep Release | cut -f 2) == "7\.04" ]]; then
   #an old version of Ubuntu - specifically optimus
     export EDITOR=$(type vim vi nano pico 2>/dev/null | sed 's/ .*$//;q')
