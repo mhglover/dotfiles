@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
 
 # docker-compose completion - throws errors
 # sudo curl -L https://raw.githubusercontent.com/docker/compose/1.21.0/contrib/completion/bash/docker-compose -o /usr/local/etc/bash_completion.d/docker-compose
@@ -34,4 +34,4 @@ function dockerbash {
 }
 
 # docker image completion
-complete -o default -W "$(docker ps --format "{{.Names}}")" dockerbash
+# complete -W "$(docker ps --format "{{.Names}}")" dockerbash
