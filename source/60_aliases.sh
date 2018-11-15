@@ -29,3 +29,7 @@ als() {
         alias $1
     fi
 }
+
+
+alias k='kitchen'
+
