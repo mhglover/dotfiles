@@ -12,7 +12,11 @@ function mitmreset {
     sed -i.bak -e "${ln}d" ~/.ssh/known_hosts && echo "removed line ${ln}"
 }
 
-function bamboossh {
+function ssh-bamboo {
+    if [[ -z $1 ]]; then
+        echo "usage: $0 <bamboo aws instance id>"
+        exit 1
+    fi
     ip=$(aws --profile prod ec2 describe-instances --instance-ids $1 --query "Reservations[].Instances[].PrivateIpAddress" --output text)
     echo "ip: $ip"
     ssh -i ~/.ssh/elasticbamboo.pk ec2-user@$ip

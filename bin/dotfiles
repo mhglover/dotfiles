@@ -166,7 +166,7 @@ fi
 source ~/.dotfiles/source/10_misc.sh
 
 # Add binaries into the path
-PATH=~/.dotfiles/bin:$PATH
+PATH=~/.dotfiles/bin:~/.local/bin:$PATH
 export PATH
 
 # Tweak file globbing.

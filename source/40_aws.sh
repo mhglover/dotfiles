@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 export AWS_CREDENTIAL_FILE=~/.aws/credentials
 
 alias jqtask="jq -S '{containerDefinitions: .taskDefinition.containerDefinitions}'"
@@ -32,6 +33,7 @@ function ecs-replace-ami {
   spotinst-cli -g "QA-ECS-blue" --replace-ami=${ami} -y
   spotinst-cli -g "QA-ECS-green" --replace-ami=${ami} -y
   spotinst-cli -g "web-doghouse-spot-01" --replace-ami=${ami} -y
+  spotinst-cli -g "utility" --replace-ami=${ami} -y
   spotinst-cli -a prod -g "prod-sso-ECS-blue" --replace-ami=${ami} -y
 }
 
@@ -67,14 +69,149 @@ function ecs-roll-all-spots {
 }
 
 function ecs-roll-status-wait {
+  usage="${FUNCNAME} <pattern> [-a prod]"
+    if [[ $# -lt 1 ]]; then
+        echo "${usage}"
+        return 1
+    fi
+    
   status=$(ecs-roll-status $1 $2 $3)
-  while [[ "$status" == *"in_progress"* ]]; do
+  while [[ "$status" == *"in_progress"* || "$status" == *"starting"* ]]; do
     echo "$1 - $status"
     sleep 30
     status=$(ecs-roll-status $1 $2 $3)
   done
+
+  echo "$1 - $status"
 }
 
 function ecs-roll-status {
+  usage="${FUNCNAME} <pattern> [-a prod]"
+    if [[ $# -lt 1 ]]; then
+        echo "${usage}"
+        return 1
+    fi
   spotinst-cli --roll-status -g $1 -q -j $2 $3| jq -r '.response.items[0] | "\(.status) - \(.progress.value)%"'
 }
+
+
+function aws-whoami {
+  usage="${FUNCNAME} <AWS_ACCESS_KEY_ID> <AWS_SECRET_ACCESS_KEY>"
+    if [[ $# -lt 1 ]]; then
+        echo "${usage}"
+        return 1
+    fi
+
+  export AWS_ACCESS_KEY_ID=$1
+  export AWS_SECRET_ACCESS_KEY=$2
+  aws sts get-caller-identity
+
+  export AWS_ACCESS_KEY_ID=
+  export AWS_SECRET_ACCESS_KEY=
+
+}
+
+
+
+
+function aws-impersonate {
+  usage="${FUNCNAME} <aws-specific-vaultpath> - without secret/providers/aws/ - example: ${FUNCNAME} qa/migrationengine"
+    if [[ $# -lt 1 ]]; then
+        echo "${usage}"
+        return 1
+    fi
+  
+  json=$(curl -s -k \
+    -H "X-Vault-Token: ${VAULT_TOKEN}" \
+    "${VAULT_ADDR}/v1/secret/data/providers/aws/${1}" \
+    | jq '.data.data')
+
+  key="$(echo "${json}" | jq -r '.access_key')"
+  secret="$(echo "${json}" | jq -r '.value')"
+
+  export AWS_ACCESS_KEY_ID=${key}
+  export AWS_SECRET_ACCESS_KEY=${secret}
+  aws sts get-caller-identity
+
+}
+
+
+prodldaplb="arn:aws:elasticloadbalancing:us-east-1:560112230788:targetgroup/ldapreplicas/972f762ee6fd106e"
+
+
+function lblist {
+
+  if [[ ! -z $2 ]]; then
+        local profile=$2
+    else
+      local profile="prod"
+    fi
+
+  
+  aws elbv2 describe-load-balancers
+}
+
+
+function checklb {
+    local arn=$1
+
+    if [[ -z $1 ]]; then
+        echo "usage: $0 <arn> [env] # check the status of a load balancer"
+        return
+    fi
+
+    if [[ ! -z $2 ]]; then
+        local profile=$2
+    else
+      local profile="prod"
+    fi
+
+    instances=$(aws --profile $profile elbv2 describe-target-health --target-group-arn "$arn" --query "TargetHealthDescriptions[*].{ID:Target.Id,State:TargetHealth.State}" --output text)
+    echo "$instances" | while read instance; do
+        id=$(echo $instance | cut -f1 -d" ")
+        state=$(echo $instance | cut -f2 -d" ")
+        name=$(aws --profile prod ec2 describe-instances --instance-ids $id --query 'Reservations[].Instances[].Tags[?Key==`Name`].Value' --output text)
+        echo -e "$id\t\t$state\t\t$name"
+    done
+}
+
+
+function registerlb {
+    local arn=$1
+    local hostname=$2
+    if [[ -z $hostname ]]; then
+        echo "usage: $0 <arn> <hostname> # register an instance to a load balancer"
+        exit 1
+    fi
+
+    local instanceid=$(aws --profile prod ec2 describe-instances --filters "Name=tag:Name,Values=*$hostname*" --output text --query 'Reservations[*].Instances[*].InstanceId')
+
+    if [[ "$instanceid" == "" ]]; then
+        echo "no instance matching that hostname found in production"
+        return
+    fi
+    echo "registering instance id [$instanceid] with target group [$arn]"
+    aws --profile $profile elbv2 register-targets  --target-group-arn "$arn" --targets Id="$instanceid"
+}
+
+
+function deregisterlb {
+  local arn=$1
+  local hostname=$2
+
+  if [[ -z $hostname ]]; then
+      echo "usage: $0 <arn> <hostname> # deregister an instance from a load balancer"
+      return
+  fi
+
+    local instanceid=$(aws --profile prod ec2 describe-instances --filters "Name=tag:Name,Values=*$hostname*" --output text --query 'Reservations[*].Instances[*].InstanceId')
+
+    if [[ "$instanceid" == "" ]]; then
+        echo "no instance matching that hostname found in production"
+        return
+    fi
+
+    aws --profile prod elbv2 deregister-targets  --target-group-arn "$arn" --targets Id="$instanceid"
+}
+
+
