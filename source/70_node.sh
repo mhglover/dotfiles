@@ -1,4 +1,5 @@
 #!/usr/local/bin/bash
 
-export NVM_DIR=~/.nvm
-. $(brew --prefix nvm)/nvm.sh
+# this sloooows down starting a new shell
+# export NVM_DIR=~/.nvm
+# . $(brew --prefix nvm)/nvm.sh
