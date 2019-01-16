@@ -108,6 +108,7 @@ function vput {
 }
 
 function vrm {
+    # remove a secret from vault
     if [[ "$#" -lt 1 ]]; then
         echo "missing argument"
         return
@@ -115,10 +116,11 @@ function vrm {
     vault kv metadata delete "secret/$1"
 }
 
-function vmv {
+function vcp {
+    # copy a vault secret to a new endpoint
     if [[ "$#" -lt 2 ]]; then
-        echo "move a secret to a new endpoint in vault - needs two arguments"
-        echo "${0} path/to/secret new/path/for/secret"
+        echo "copy a secret to a new endpoint in vault - needs two arguments"
+        echo "${0} path/to/secret path/to/new/secret"
         return
     fi
 
@@ -130,10 +132,19 @@ function vmv {
     curl -k -X POST \
     -H "X-Vault-Token: ${VAULT_TOKEN}" \
     --data @<(echo "${json}") \
-    "$VAULT_ADDR/v1/secret/data/${2}" \
-    && vrm "${1}"
+    "$VAULT_ADDR/v1/secret/data/${2}"
 }
 
+function vmv {
+    # copy a secret to an new endpoint and remove the original
+    if [[ "$#" -lt 2 ]]; then
+        echo "move a secret to a new endpoint in vault - needs two arguments"
+        echo "${0} path/to/secret new/path/for/secret"
+        return
+    fi
+    
+    vcp "${1}" "${2}" && vrm "${1}"
+}
 
 
 function slateencode {
@@ -160,9 +171,15 @@ function slatedecode {
     gpg --decrypt --passphrase "$passphrase" --batch -o "$output" "$filename"
 }
 
+function mkpass {
+    password=$(gshuf -n 3 /usr/share/dict/words | gsed 's/./\u&/' | tr -cd '[A-Za-z]'; echo $(gshuf -i0-999 -n 1))
+    [[ $1 != "-m" ]] &&  echo "${password}" | pbcopy
+    echo "${password}"
+}
+
 function onetimesecret {
     if [[ -z $1 ]]; then
-        password=$(gshuf -n 3 /usr/share/dict/words | gsed 's/./\u&/' | tr -cd '[A-Za-z]'; echo $(gshuf -i0-999 -n 1))
+        password=$(mkpass -m)
     else
         password=$1
     fi

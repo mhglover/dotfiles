@@ -10,6 +10,7 @@ alias qalda="ldapadd $qaldapuser"
 alias suqalda="ldapadd $qaldapadmin"
 alias qaldm="ldapmodify $qaldapuser"
 alias qaldd="ldapdelete $qaldapuser"
+alias suqaldd="ldapdelete $qaldapadmin"
 alias ldapreminder='set | grep "^ldap\|^prodldap\|^qaldap" ; alias | grep ldap'
 
 
